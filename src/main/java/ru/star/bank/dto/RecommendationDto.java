@@ -3,12 +3,14 @@ package ru.star.bank.dto;
 import java.util.Objects;
 import java.util.UUID;
 
+
 public class RecommendationDto {
-    private UUID id;
-    private String name;
-    private String text;
+    UUID id;
+    String name;
+    String text;
 
     public RecommendationDto() {
+
     }
 
     public RecommendationDto(UUID id, String name, String text) {
@@ -54,10 +56,10 @@ public class RecommendationDto {
 
     @Override
     public String toString() {
-        return "RecommendationDto{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", text='" + text + '\'' +
+        return "Recommendation{" +
+                "name" + name +
+                ", id'" + id + '\'' +
+                ", text'" + text + '\'' +
                 '}';
     }
 }
