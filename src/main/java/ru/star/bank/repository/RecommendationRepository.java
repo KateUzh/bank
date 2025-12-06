@@ -45,12 +45,4 @@ public class RecommendationRepository {
         Integer sum = jdbcTemplate.queryForObject(sql, Integer.class, userId, transactionType);
         return sum != null ? sum : 0;
     }
-
-//    public int getRandomTransactionAmount(UUID users){
-//        Integer result = jdbcTemplate.queryForObject(
-//                "SELECT amount FROM transactions t WHERE t.user_id = ? LIMIT 1",
-//                Integer.class,
-//                users);
-//        return result != null ? result : 0;
-//    }
 }
