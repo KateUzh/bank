@@ -1,5 +1,6 @@
 package ru.star.bank.dto;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -83,4 +84,5 @@ public class DynamicRecommendationDto {
                 ", rule=" + rule +
                 '}';
     }
+
 }
