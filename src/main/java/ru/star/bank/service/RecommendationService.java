@@ -11,7 +11,6 @@ import ru.star.bank.repository.RecommendationRepository;
 import ru.star.bank.rules.RecommendationRuleSet;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class RecommendationService {
@@ -20,15 +19,18 @@ public class RecommendationService {
     private final DynamicRecommendationRepository dynamicRepository;
     private final RecommendationRepository userRepository;
 
-    public RecommendationService(List<RecommendationRuleSet> ruleSets,
-                                 DynamicRecommendationRepository dynamicRepository,
-                                 RecommendationRepository userRepository) {
+    public RecommendationService(
+            List<RecommendationRuleSet> ruleSets,
+            DynamicRecommendationRepository dynamicRepository,
+            RecommendationRepository userRepository
+    ) {
         this.ruleSets = ruleSets;
         this.dynamicRepository = dynamicRepository;
         this.userRepository = userRepository;
     }
 
     public RecommendationResponse getRecommendations(UUID userId) {
+
         List<RecommendationDto> fixedRecommendations = ruleSets.stream()
                 .map(rule -> rule.apply(userId))
                 .flatMap(Optional::stream)
@@ -43,64 +45,78 @@ public class RecommendationService {
                 ))
                 .toList();
 
-        List<RecommendationDto> allRecommendations = new ArrayList<>();
-        allRecommendations.addAll(fixedRecommendations);
-        allRecommendations.addAll(dynamicRecommendations);
+        List<RecommendationDto> all = new ArrayList<>();
+        all.addAll(fixedRecommendations);
+        all.addAll(dynamicRecommendations);
 
-        return new RecommendationResponse(userId, allRecommendations);
+        return new RecommendationResponse(userId, all);
     }
 
     private boolean checkDynamicRule(UUID userId, DynamicRecommendationEntity ruleEntity) {
         for (DynamicRuleEntity rule : ruleEntity.getRules()) {
-            boolean result = evaluateRule(userId, rule);
-            if (!result) return false;
+            if (!evaluateRule(userId, rule)) {
+                return false;
+            }
         }
         return true;
     }
 
     private boolean evaluateRule(UUID userId, DynamicRuleEntity rule) {
-        String query = rule.getQuery();
+
         List<ArgumentsEntity> args = rule.getArgumentsEntity();
         boolean negate = rule.isNegate();
 
-        boolean result = switch (query) {
+        boolean result = switch (rule.getQuery()) {
+
             case "USER_OF" -> {
+                if (args.size() < 1) yield false;
                 String productType = args.get(0).getProductType();
                 yield userRepository.hasProductOfType(userId, productType);
             }
+
             case "ACTIVE_USER_OF" -> {
+                if (args.size() < 1) yield false;
                 String productType = args.get(0).getProductType();
-                int txCount = userRepository.getTransactionCount(userId, productType);
-                yield txCount >= 5;
+                yield userRepository.getTransactionCount(userId, productType) >= 5;
             }
+
             case "TRANSACTION_SUM_COMPARE" -> {
+                if (args.size() < 4) yield false;
+
                 String productType = args.get(0).getProductType();
-                String transactionType = args.get(1).getTransactionType();
-                String operator = args.get(2).getMathSign();
-                int threshold = args.get(3).getThresholdSum();
+                String transactionType = args.get(1).getProductType();
+                String operator = args.get(2).getProductType();
+                int threshold = Integer.parseInt(args.get(3).getProductType());
+
                 int sum = userRepository.getSumOfTransactions(userId, productType, transactionType);
                 yield compare(sum, operator, threshold);
             }
+
             case "TRANSACTION_SUM_COMPARE_DEPOSIT_WITHDRAW" -> {
+                if (args.size() < 2) yield false;
+
                 String productType = args.get(0).getProductType();
-                String operator = args.get(1).getMathSign();
+                String operator = args.get(1).getProductType();
+
                 int deposit = userRepository.getSumOfTransactions(userId, productType, "DEPOSIT");
                 int withdraw = userRepository.getSumOfTransactions(userId, productType, "WITHDRAW");
+
                 yield compare(deposit, operator, withdraw);
             }
+
             default -> false;
         };
 
         return negate ? !result : result;
     }
 
-    private boolean compare(int a, String operator, int b) {
+    private boolean compare(int left, String operator, int right) {
         return switch (operator) {
-            case ">" -> a > b;
-            case "<" -> a < b;
-            case "=" -> a == b;
-            case ">=" -> a >= b;
-            case "<=" -> a <= b;
+            case ">" -> left > right;
+            case "<" -> left < right;
+            case "=" -> left == right;
+            case ">=" -> left >= right;
+            case "<=" -> left <= right;
             default -> false;
         };
     }
