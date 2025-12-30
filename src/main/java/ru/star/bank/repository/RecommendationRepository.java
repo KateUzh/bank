@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -90,11 +89,11 @@ public class RecommendationRepository {
 
     public int getTransactionCount(UUID userId, String productType) {
         String sql = """
-        SELECT COUNT(*) 
-        FROM transactions t
-        JOIN products p ON t.product_id = p.id
-        WHERE t.user_id = ? AND p.type = ?
-    """;
+                    SELECT COUNT(*) 
+                    FROM transactions t
+                    JOIN products p ON t.product_id = p.id
+                    WHERE t.user_id = ? AND p.type = ?
+                """;
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, userId, productType);
         return count != null ? count : 0;
     }

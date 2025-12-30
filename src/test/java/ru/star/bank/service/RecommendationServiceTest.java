@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class RecommendationServiceTest {
+public class RecommendationServiceTest {
 
     private RecommendationRuleSet ruleSet1;
     private RecommendationRuleSet ruleSet2;

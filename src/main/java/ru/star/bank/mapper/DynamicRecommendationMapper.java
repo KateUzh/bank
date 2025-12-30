@@ -14,9 +14,11 @@ import java.util.stream.Collectors;
 @Component
 public class DynamicRecommendationMapper {
 
-    public ArgumentsEntity argumentDtoToEntity(ArgumentsDto argumentsDto) {
+    public ArgumentsEntity argumentDtoToEntity(ArgumentsDto argumentsDto, DynamicRuleEntity ruleEntity) {
         ArgumentsEntity argumentsEntity = new ArgumentsEntity();
         argumentsEntity.setProductType(argumentsDto.getProductType());
+        argumentsEntity.setDynamicRule(ruleEntity);
+
         if (argumentsDto.getTransactionType() != null) {
             argumentsEntity.setTransactionType(argumentsDto.getTransactionType());
         }
@@ -29,68 +31,40 @@ public class DynamicRecommendationMapper {
         return argumentsEntity;
     }
 
-    public List<ArgumentsEntity> argumentsDtoToEntity(List<ArgumentsDto> argumentsDtoList) {
+    public List<ArgumentsEntity> argumentsDtoToEntity(List<ArgumentsDto> argumentsDtoList, DynamicRuleEntity ruleEntity) {
         return argumentsDtoList.stream()
-                .map(this::argumentDtoToEntity)
+                .map(dto -> argumentDtoToEntity(dto, ruleEntity))
                 .collect(Collectors.toList());
     }
 
-    public DynamicRuleEntity dynamicRuleDtoToEntity(DynamicRuleDto ruleDto) {
+    public DynamicRuleEntity dynamicRuleDtoToEntity(DynamicRuleDto ruleDto, DynamicRecommendationEntity entity) {
         DynamicRuleEntity ruleEntity = new DynamicRuleEntity();
         ruleEntity.setQuery(ruleDto.getQuery());
-        ruleEntity.setArgumentsEntity(argumentsDtoToEntity(ruleDto.getArguments()));
         ruleEntity.setNegate(ruleDto.isNegate());
+        ruleEntity.setDynamicRecommendation(entity);
+
+        if (ruleDto.getArguments() != null) {
+            ruleEntity.setArgumentsEntity(argumentsDtoToEntity(ruleDto.getArguments(), ruleEntity));
+        }
         return ruleEntity;
     }
 
-    public List<DynamicRuleEntity> dynamicRulesDtoToEntity(List<DynamicRuleDto> dynamicRuleDtoList) {
+    public List<DynamicRuleEntity> dynamicRulesDtoToEntity(List<DynamicRuleDto> dynamicRuleDtoList, DynamicRecommendationEntity entity) {
         return dynamicRuleDtoList.stream()
-                .map(this::dynamicRuleDtoToEntity)
+                .map(ruleDto -> dynamicRuleDtoToEntity(ruleDto, entity))
                 .collect(Collectors.toList());
     }
 
-    public DynamicRecommendationEntity dynamicRecommendationDtoToEntity(DynamicRecommendationDto
-                                                                                recommendationDto) {
-        DynamicRecommendationEntity dynamicRecommendationEntity = new DynamicRecommendationEntity();
-        dynamicRecommendationEntity.setProductName(recommendationDto.getProduct_name());
-        dynamicRecommendationEntity.setProductId(recommendationDto.getProduct_id());
-        dynamicRecommendationEntity.setProductText(recommendationDto.getProduct_text());
+    public DynamicRecommendationEntity dynamicRecommendationDtoToEntity(DynamicRecommendationDto dto) {
+        DynamicRecommendationEntity entity = new DynamicRecommendationEntity();
+        entity.setProductName(dto.getProduct_name());
+        entity.setProductId(dto.getProduct_id());
+        entity.setProductText(dto.getProduct_text());
+        if (dto.getRule() != null) {
+            entity.setRules(dynamicRulesDtoToEntity(dto.getRule(), entity));
 
-        if(recommendationDto.getRule() != null){
-            List<DynamicRuleEntity> ruleEntityList = recommendationDto.getRule().stream()
-                    .map(ruleDto -> {
-                        DynamicRuleEntity ruleEntity = new DynamicRuleEntity();
-                        ruleEntity.setQuery(ruleDto.getQuery());
-                        ruleEntity.setArgumentsEntity(argumentsDtoToEntity(ruleDto.getArguments()));
-                        ruleEntity.setNegate(ruleDto.isNegate());
-                        ruleEntity.setDynamicRecommendation(dynamicRecommendationEntity);
-
-                        if(ruleDto.getArguments() != null){
-                            List<ArgumentsEntity> argumentsEntityList = ruleDto.getArguments().stream()
-                                    .map(argumentsDto -> {
-                                        ArgumentsEntity argumentsEntity = new ArgumentsEntity();
-                                        argumentsEntity.setProductType(argumentsDto.getProductType());
-                                        if (argumentsDto.getTransactionType() != null) {
-                                            argumentsEntity.setTransactionType(argumentsDto.getTransactionType());
-                                        }
-                                        if (argumentsDto.getMathSign() != null) {
-                                            argumentsEntity.setMathSign(argumentsDto.getMathSign());
-                                        }
-                                        if (argumentsDto.getThresholdSum() != null) {
-                                            argumentsEntity.setThresholdSum(argumentsDto.getThresholdSum());
-                                        }
-                                        argumentsEntity.setDynamicRule(ruleEntity);
-
-                                        return argumentsEntity;
-                                    }).collect(Collectors.toList());
-                            ruleEntity.setArgumentsEntity(argumentsEntityList);
-                        }
-
-                        return ruleEntity;
-                    }).collect(Collectors.toList());
-            dynamicRecommendationEntity.setRules(ruleEntityList);
         }
-        return dynamicRecommendationEntity;
+        return entity;
     }
 
     public ArgumentsDto argumentEntityToDto(ArgumentsEntity argumentsEntity) {

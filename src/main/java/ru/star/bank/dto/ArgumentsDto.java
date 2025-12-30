@@ -8,7 +8,8 @@ public class ArgumentsDto {
     private String mathSign;
     private Integer thresholdSum;
 
-    public ArgumentsDto(){}
+    public ArgumentsDto() {
+    }
 
     public ArgumentsDto(String productType, String transactionType, String mathSign, Integer thresholdSum) {
         this.productType = productType;

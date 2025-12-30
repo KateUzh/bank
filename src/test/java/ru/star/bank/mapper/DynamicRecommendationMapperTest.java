@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class DynamicRecommendationMapperTest {
+public class DynamicRecommendationMapperTest {
 
     private DynamicRecommendationMapper mapper;
 
@@ -27,12 +27,13 @@ class DynamicRecommendationMapperTest {
     @Test
     void testArgumentDtoToEntityAndBack() {
         ArgumentsDto dto = new ArgumentsDto();
+        DynamicRuleEntity ruleEntity = new DynamicRuleEntity();
         dto.setProductType("DEBIT");
         dto.setTransactionType("DEPOSIT");
         dto.setMathSign(">");
         dto.setThresholdSum(1000);
 
-        ArgumentsEntity entity = mapper.argumentDtoToEntity(dto);
+        ArgumentsEntity entity = mapper.argumentDtoToEntity(dto, ruleEntity);
         assertEquals(dto.getProductType(), entity.getProductType());
         assertEquals(dto.getTransactionType(), entity.getTransactionType());
         assertEquals(dto.getMathSign(), entity.getMathSign());
@@ -54,11 +55,12 @@ class DynamicRecommendationMapperTest {
         argDto.setThresholdSum(1000);
 
         DynamicRuleDto ruleDto = new DynamicRuleDto();
+        DynamicRecommendationEntity recEntity = new DynamicRecommendationEntity();
         ruleDto.setQuery("TRANSACTION_SUM_COMPARE");
         ruleDto.setArguments(Collections.singletonList(argDto));
         ruleDto.setNegate(false);
 
-        DynamicRuleEntity entity = mapper.dynamicRuleDtoToEntity(ruleDto);
+        DynamicRuleEntity entity = mapper.dynamicRuleDtoToEntity(ruleDto, recEntity);
         assertEquals(ruleDto.getQuery(), entity.getQuery());
         assertEquals(ruleDto.isNegate(), entity.isNegate());
         assertEquals(ruleDto.getArguments().size(), entity.getArgumentsEntity().size());

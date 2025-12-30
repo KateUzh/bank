@@ -35,7 +35,8 @@ public class DynamicRecommendationEntity {
     @OneToMany(mappedBy = "dynamicRecommendation", cascade = CascadeType.ALL)
     private List<DynamicRuleEntity> rules = new ArrayList<>();
 
-    public DynamicRecommendationEntity(){}
+    public DynamicRecommendationEntity() {
+    }
 
     public DynamicRecommendationEntity(String productName, UUID productId, String productText,
                                        List<DynamicRuleEntity> rules) {

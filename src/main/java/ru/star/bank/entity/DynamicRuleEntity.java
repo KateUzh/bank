@@ -30,8 +30,8 @@ public class DynamicRuleEntity {
 
     @Column(name = "argumentsEntity")
     @OneToMany(mappedBy = "dynamicRule",
-    cascade = CascadeType.ALL,
-    orphanRemoval = true)
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<ArgumentsEntity> argumentsEntity = new ArrayList<>();
 
     @Column(name = "negate")

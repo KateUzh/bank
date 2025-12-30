@@ -10,7 +10,10 @@ import ru.star.bank.repository.DynamicRecommendationRepository;
 import ru.star.bank.repository.RecommendationRepository;
 import ru.star.bank.rules.RecommendationRuleSet;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class RecommendationService {
