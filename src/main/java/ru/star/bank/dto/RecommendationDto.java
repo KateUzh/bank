@@ -4,60 +4,60 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class RecommendationDto {
-    private UUID id;
-    private String name;
-    private String text;
+    private UUID productId;
+    private String productName;
+    private String productText;
 
     public RecommendationDto() {
     }
 
-    public RecommendationDto(UUID id, String name, String text) {
-        this.id = id;
-        this.name = name;
-        this.text = text;
+    public RecommendationDto(UUID productId, String productName, String productText) {
+        this.productId = productId;
+        this.productName = productName;
+        this.productText = productText;
     }
 
-    public UUID getId() {
-        return id;
+    public UUID getProductId() {
+        return productId;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setProductId(UUID productId) {
+        this.productId = productId;
     }
 
-    public String getName() {
-        return name;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
-    public String getText() {
-        return text;
+    public String getProductText() {
+        return productText;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setProductText(String productText) {
+        this.productText = productText;
     }
 
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof RecommendationDto that)) return false;
-        return Objects.equals(id, that.id);
+        return Objects.equals(productId, that.productId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hashCode(productId);
     }
 
     @Override
     public String toString() {
         return "RecommendationDto{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", text='" + text + '\'' +
+                "productId=" + productId +
+                ", productName='" + productName + '\'' +
+                ", productText='" + productText + '\'' +
                 '}';
     }
 }

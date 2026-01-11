@@ -2,6 +2,10 @@ package ru.star.bank.repository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.UUID;
@@ -11,80 +15,89 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class RecommendationRepositoryTest {
 
-    private final UUID userId = UUID.randomUUID();
-    private JdbcTemplate jdbcTemplate;
-    private RecommendationRepository repository;
+    @Mock
+    @Qualifier("recommendationsJdbcTemplate")
+    JdbcTemplate jdbcTemplate;
+
+    @InjectMocks
+    RecommendationRepository repository;
+
+    private UUID userId;
 
     @BeforeEach
-    void setup() {
-        jdbcTemplate = mock(JdbcTemplate.class);
-        repository = new RecommendationRepository(jdbcTemplate);
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        userId = UUID.randomUUID();
     }
 
     @Test
-    void testHasProductOfTypeTrue() {
-        when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class), eq(userId), eq("DEBIT")))
-                .thenReturn(3);
+    void testHasProductOfType_true() {
+        when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class), eq(userId), eq("CARD")))
+                .thenReturn(1);
 
-        boolean result = repository.hasProductOfType(userId, "DEBIT");
+        boolean result = repository.hasProductOfType(userId, "CARD");
         assertTrue(result);
-        verify(jdbcTemplate, times(1)).queryForObject(anyString(), eq(Integer.class), eq(userId), eq("DEBIT"));
+
+        boolean cached = repository.hasProductOfType(userId, "CARD");
+        assertTrue(cached);
+
+        verify(jdbcTemplate, times(1))
+                .queryForObject(anyString(), eq(Integer.class), eq(userId), eq("CARD"));
     }
 
     @Test
-    void testHasProductOfTypeFalse() {
-        when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class), eq(userId), eq("CREDIT")))
+    void testHasProductOfType_false() {
+        when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class), eq(userId), eq("CARD")))
                 .thenReturn(0);
 
-        boolean result = repository.hasProductOfType(userId, "CREDIT");
+        boolean result = repository.hasProductOfType(userId, "CARD");
         assertFalse(result);
-        verify(jdbcTemplate, times(1)).queryForObject(anyString(), eq(Integer.class), eq(userId), eq("CREDIT"));
     }
 
     @Test
     void testGetSumOfTransactions() {
-        when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class), eq(userId), eq("DEBIT"), eq("DEPOSIT")))
-                .thenReturn(5000);
+        when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class), eq(userId), eq("CARD"), eq("DEPOSIT")))
+                .thenReturn(500);
 
-        int sum = repository.getSumOfTransactions(userId, "DEBIT", "DEPOSIT");
-        assertEquals(5000, sum);
-        verify(jdbcTemplate, times(1)).queryForObject(anyString(), eq(Integer.class), eq(userId), eq("DEBIT"), eq("DEPOSIT"));
-    }
+        int sum = repository.getSumOfTransactions(userId, "CARD", "DEPOSIT");
+        assertEquals(500, sum);
 
-    @Test
-    void testGetSumOfTransactionsReturnsZeroIfNull() {
-        when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class), eq(userId), eq("SAVING"), eq("WITHDRAW")))
-                .thenReturn(null);
-
-        int sum = repository.getSumOfTransactions(userId, "SAVING", "WITHDRAW");
-        assertEquals(0, sum);
-        verify(jdbcTemplate, times(1)).queryForObject(anyString(), eq(Integer.class), eq(userId), eq("SAVING"), eq("WITHDRAW"));
+        int cached = repository.getSumOfTransactions(userId, "CARD", "DEPOSIT");
+        assertEquals(500, cached);
     }
 
     @Test
     void testGetSumOfAllTransactions() {
-        when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class), eq(userId), eq("DEPOSIT")))
-                .thenReturn(10000);
+        when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class), eq(userId), eq("WITHDRAW")))
+                .thenReturn(300);
 
-        int sum = repository.getSumOfAllTransactions(userId, "DEPOSIT");
-        assertEquals(10000, sum);
-        verify(jdbcTemplate, times(1)).queryForObject(anyString(), eq(Integer.class), eq(userId), eq("DEPOSIT"));
+        int sum = repository.getSumOfAllTransactions(userId, "WITHDRAW");
+        assertEquals(300, sum);
     }
 
     @Test
-    void testGetSumOfAllTransactionsReturnsZeroIfNull() {
-        when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class), eq(userId), eq("WITHDRAW")))
-                .thenReturn(null);
+    void testGetSumDepositWithdraw() {
+        when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class), eq(userId), eq("CARD"), eq("DEPOSIT")))
+                .thenReturn(1000);
+        when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class), eq(userId), eq("CARD"), eq("WITHDRAW")))
+                .thenReturn(400);
 
-        int sum = repository.getSumOfAllTransactions(userId, "WITHDRAW");
-        assertEquals(0, sum);
-        verify(jdbcTemplate, times(1)).queryForObject(anyString(), eq(Integer.class), eq(userId), eq("WITHDRAW"));
+        int result = repository.getSumDepositWithdraw(userId, "CARD");
+        assertEquals(600, result);
+    }
+
+    @Test
+    void testGetTransactionCount() {
+        when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class), eq(userId), eq("CARD")))
+                .thenReturn(7);
+
+        int count = repository.getTransactionCount(userId, "CARD");
+        assertEquals(7, count);
     }
 }

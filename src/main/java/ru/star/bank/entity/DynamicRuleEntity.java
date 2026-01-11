@@ -3,6 +3,8 @@ package ru.star.bank.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import ru.star.bank.rules.QueryType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +28,9 @@ public class DynamicRuleEntity {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "query")
-    private String query;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "query", nullable = false)
+    private QueryType query;
 
     @Column(name = "argumentsEntity")
     @OneToMany(mappedBy = "dynamicRule",
@@ -44,17 +48,17 @@ public class DynamicRuleEntity {
     public DynamicRuleEntity() {
     }
 
-    public DynamicRuleEntity(String query, List<ArgumentsEntity> argumentsEntity, boolean negate) {
+    public DynamicRuleEntity(QueryType query, List<ArgumentsEntity> argumentsEntity, boolean negate) {
         this.query = query;
         this.argumentsEntity = argumentsEntity;
         this.negate = negate;
     }
 
-    public String getQuery() {
+    public QueryType getQuery() {
         return query;
     }
 
-    public void setQuery(String query) {
+    public void setQuery(QueryType query) {
         this.query = query;
     }
 

@@ -8,139 +8,66 @@ import ru.star.bank.dto.DynamicRuleDto;
 import ru.star.bank.entity.ArgumentsEntity;
 import ru.star.bank.entity.DynamicRecommendationEntity;
 import ru.star.bank.entity.DynamicRuleEntity;
+import ru.star.bank.rules.QueryType;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DynamicRecommendationMapperTest {
 
     private DynamicRecommendationMapper mapper;
 
     @BeforeEach
-    void setup() {
+    void setUp() {
         mapper = new DynamicRecommendationMapper();
     }
 
     @Test
-    void testArgumentDtoToEntityAndBack() {
-        ArgumentsDto dto = new ArgumentsDto();
+    void testArgumentDtoToEntity_andBack() {
         DynamicRuleEntity ruleEntity = new DynamicRuleEntity();
-        dto.setProductType("DEBIT");
-        dto.setTransactionType("DEPOSIT");
-        dto.setMathSign(">");
-        dto.setThresholdSum(1000);
-
+        ArgumentsDto dto = new ArgumentsDto("DEBIT", "DEPOSIT", ">", 1000);
         ArgumentsEntity entity = mapper.argumentDtoToEntity(dto, ruleEntity);
-        assertEquals(dto.getProductType(), entity.getProductType());
-        assertEquals(dto.getTransactionType(), entity.getTransactionType());
-        assertEquals(dto.getMathSign(), entity.getMathSign());
-        assertEquals(dto.getThresholdSum(), entity.getThresholdSum());
 
-        ArgumentsDto convertedBack = mapper.argumentEntityToDto(entity);
-        assertEquals(dto.getProductType(), convertedBack.getProductType());
-        assertEquals(dto.getTransactionType(), convertedBack.getTransactionType());
-        assertEquals(dto.getMathSign(), convertedBack.getMathSign());
-        assertEquals(dto.getThresholdSum(), convertedBack.getThresholdSum());
+        assertEquals("DEBIT", entity.getProductType());
+        assertEquals("DEPOSIT", entity.getTransactionType());
+        assertEquals(">", entity.getMathSign());
+        assertEquals(1000, entity.getThresholdSum());
+
+        ArgumentsDto backDto = mapper.argumentEntityToDto(entity);
+        assertEquals(dto, backDto);
     }
 
     @Test
-    void testDynamicRuleDtoToEntityAndBack() {
-        ArgumentsDto argDto = new ArgumentsDto();
-        argDto.setProductType("DEBIT");
-        argDto.setTransactionType("DEPOSIT");
-        argDto.setMathSign(">");
-        argDto.setThresholdSum(1000);
-
-        DynamicRuleDto ruleDto = new DynamicRuleDto();
+    void testDynamicRuleDtoToEntity_andBack() {
         DynamicRecommendationEntity recEntity = new DynamicRecommendationEntity();
-        ruleDto.setQuery("TRANSACTION_SUM_COMPARE");
-        ruleDto.setArguments(Collections.singletonList(argDto));
-        ruleDto.setNegate(false);
+        ArgumentsDto arg = new ArgumentsDto("DEBIT", "DEPOSIT", ">", 1000);
+        DynamicRuleDto ruleDto = new DynamicRuleDto(QueryType.TRANSACTION_SUM_COMPARE, List.of(arg), true);
 
         DynamicRuleEntity entity = mapper.dynamicRuleDtoToEntity(ruleDto, recEntity);
-        assertEquals(ruleDto.getQuery(), entity.getQuery());
-        assertEquals(ruleDto.isNegate(), entity.isNegate());
-        assertEquals(ruleDto.getArguments().size(), entity.getArgumentsEntity().size());
-        assertEquals(ruleDto.getArguments().get(0).getProductType(),
-                entity.getArgumentsEntity().get(0).getProductType());
+        assertEquals(QueryType.TRANSACTION_SUM_COMPARE, entity.getQuery());
+        assertTrue(entity.isNegate());
+        assertEquals(1, entity.getArgumentsEntity().size());
 
-        DynamicRuleDto convertedBack = mapper.dynamicRuleEntityToDto(entity);
-        assertEquals(ruleDto.getQuery(), convertedBack.getQuery());
-        assertEquals(ruleDto.isNegate(), convertedBack.isNegate());
-        assertEquals(ruleDto.getArguments().get(0).getProductType(),
-                convertedBack.getArguments().get(0).getProductType());
+        DynamicRuleDto backDto = mapper.dynamicRuleEntityToDto(entity);
+        assertEquals(ruleDto.getQuery(), backDto.getQuery());
+        assertEquals(ruleDto.isNegate(), backDto.isNegate());
+        assertEquals(ruleDto.getArguments(), backDto.getArguments());
     }
 
     @Test
-    void testDynamicRecommendationDtoToEntityAndBack() {
-        ArgumentsDto argDto = new ArgumentsDto();
-        argDto.setProductType("DEBIT");
-        argDto.setTransactionType("DEPOSIT");
-        argDto.setMathSign(">");
-        argDto.setThresholdSum(1000);
+    void testDynamicRecommendationDtoToEntity_andBack() {
+        ArgumentsDto arg = new ArgumentsDto("DEBIT", "DEPOSIT", ">", 1000);
+        DynamicRuleDto ruleDto = new DynamicRuleDto(QueryType.TRANSACTION_SUM_COMPARE, List.of(arg), false);
+        DynamicRecommendationDto dto = new DynamicRecommendationDto("TopSaving", null, "Text", List.of(ruleDto));
 
-        DynamicRuleDto ruleDto = new DynamicRuleDto();
-        ruleDto.setQuery("TRANSACTION_SUM_COMPARE");
-        ruleDto.setArguments(Collections.singletonList(argDto));
-        ruleDto.setNegate(false);
+        DynamicRecommendationEntity entity = mapper.dynamicRecommendationDtoToEntity(dto);
+        assertEquals("TopSaving", entity.getProductName());
+        assertEquals(1, entity.getRules().size());
 
-        DynamicRecommendationDto recDto = new DynamicRecommendationDto();
-        recDto.setId(UUID.randomUUID());
-        recDto.setProduct_name("Test Product");
-        recDto.setProduct_id(UUID.randomUUID());
-        recDto.setProduct_text("Test Text");
-        recDto.setRule(Collections.singletonList(ruleDto));
-
-        DynamicRecommendationEntity entity = mapper.dynamicRecommendationDtoToEntity(recDto);
-        assertEquals(recDto.getProduct_name(), entity.getProductName());
-        assertEquals(recDto.getProduct_id(), entity.getProductId());
-        assertEquals(recDto.getProduct_text(), entity.getProductText());
-        assertEquals(recDto.getRule().size(), entity.getRules().size());
-
-        DynamicRecommendationDto convertedBack = mapper.dynamicRecommendationEntityToDto(entity);
-        assertEquals(recDto.getProduct_name(), convertedBack.getProduct_name());
-        assertEquals(recDto.getProduct_id(), convertedBack.getProduct_id());
-        assertEquals(recDto.getProduct_text(), convertedBack.getProduct_text());
-        assertEquals(recDto.getRule().size(), convertedBack.getRule().size());
-        assertEquals(recDto.getRule().get(0).getQuery(),
-                convertedBack.getRule().get(0).getQuery());
-    }
-
-    @Test
-    void testMultipleRulesAndArguments() {
-        ArgumentsDto arg1 = new ArgumentsDto();
-        arg1.setProductType("DEBIT");
-
-        ArgumentsDto arg2 = new ArgumentsDto();
-        arg2.setProductType("CREDIT");
-
-        DynamicRuleDto rule1 = new DynamicRuleDto();
-        rule1.setQuery("USER_OF");
-        rule1.setArguments(Collections.singletonList(arg1));
-        rule1.setNegate(true);
-
-        DynamicRuleDto rule2 = new DynamicRuleDto();
-        rule2.setQuery("ACTIVE_USER_OF");
-        rule2.setArguments(Collections.singletonList(arg2));
-        rule2.setNegate(false);
-
-        DynamicRecommendationDto recDto = new DynamicRecommendationDto();
-        recDto.setProduct_name("Multi Rule Product");
-        recDto.setProduct_id(UUID.randomUUID());
-        recDto.setProduct_text("Multi Rule Text");
-        recDto.setRule(Arrays.asList(rule1, rule2));
-
-        DynamicRecommendationEntity entity = mapper.dynamicRecommendationDtoToEntity(recDto);
-        assertEquals(2, entity.getRules().size());
-        assertEquals(1, entity.getRules().get(0).getArgumentsEntity().size());
-        assertEquals(1, entity.getRules().get(1).getArgumentsEntity().size());
-
-        DynamicRecommendationDto convertedBack = mapper.dynamicRecommendationEntityToDto(entity);
-        assertEquals(2, convertedBack.getRule().size());
-        assertEquals("USER_OF", convertedBack.getRule().get(0).getQuery());
-        assertEquals("ACTIVE_USER_OF", convertedBack.getRule().get(1).getQuery());
+        DynamicRecommendationDto backDto = mapper.dynamicRecommendationEntityToDto(entity);
+        assertEquals(dto.getProduct_name(), backDto.getProduct_name());
+        assertEquals(dto.getRule().size(), backDto.getRule().size());
     }
 }

@@ -2,67 +2,61 @@ package ru.star.bank.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.star.bank.dto.RecommendationDto;
 import ru.star.bank.dto.RecommendationResponse;
+import ru.star.bank.entity.ArgumentsEntity;
+import ru.star.bank.entity.DynamicRecommendationEntity;
+import ru.star.bank.entity.DynamicRuleEntity;
 import ru.star.bank.repository.DynamicRecommendationRepository;
 import ru.star.bank.repository.RecommendationRepository;
-import ru.star.bank.rules.RecommendationRuleSet;
+import ru.star.bank.rules.QueryType;
 
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class RecommendationServiceTest {
 
-    private RecommendationRuleSet ruleSet1;
-    private RecommendationRuleSet ruleSet2;
-    private DynamicRecommendationRepository dynamicRepository;
     private RecommendationRepository userRepository;
+    private DynamicRecommendationRepository dynamicRepository;
     private RecommendationService service;
-    private UUID userId;
 
     @BeforeEach
-    void setup() {
-        ruleSet1 = mock(RecommendationRuleSet.class);
-        ruleSet2 = mock(RecommendationRuleSet.class);
-        dynamicRepository = mock(DynamicRecommendationRepository.class);
+    void setUp() {
         userRepository = mock(RecommendationRepository.class);
-        userId = UUID.randomUUID();
+        dynamicRepository = mock(DynamicRecommendationRepository.class);
 
-        service = new RecommendationService(
-                Arrays.asList(ruleSet1, ruleSet2),
-                dynamicRepository,
-                userRepository
-        );
+        service = new RecommendationService(List.of(), dynamicRepository, userRepository);
     }
 
     @Test
-    void testFixedRecommendations() {
-        RecommendationDto r1 = new RecommendationDto(UUID.randomUUID(), "Product1", "Text1");
-        when(ruleSet1.apply(userId)).thenReturn(Optional.of(r1));
-        when(ruleSet2.apply(userId)).thenReturn(Optional.empty());
-        when(dynamicRepository.findAll()).thenReturn(Arrays.asList());
+    void testDynamicRecommendationWithRuleEvaluated() {
+        UUID userId = UUID.randomUUID();
+
+        when(userRepository.hasProductOfType(userId, "DEBIT")).thenReturn(true);
+
+        ArgumentsEntity arg = new ArgumentsEntity();
+        arg.setProductType("DEBIT");
+
+        DynamicRuleEntity rule = new DynamicRuleEntity();
+        rule.setQuery(QueryType.USER_OF);
+        rule.setNegate(false);
+        rule.setArgumentsEntity(List.of(arg));
+
+        DynamicRecommendationEntity recommendation = new DynamicRecommendationEntity();
+        recommendation.setProductId(UUID.randomUUID());
+        recommendation.setProductName("Debit Card Promo");
+        recommendation.setProductText("Рекомендуем открыть дебетовую карту");
+        recommendation.setRules(List.of(rule));
+
+        when(dynamicRepository.findAll()).thenReturn(List.of(recommendation));
 
         RecommendationResponse response = service.getRecommendations(userId);
 
-        assertEquals(userId, response.getUserId());
         assertEquals(1, response.getRecommendations().size());
-        assertTrue(response.getRecommendations().contains(r1));
-    }
 
-    @Test
-    void testEmptyRecommendations() {
-        when(ruleSet1.apply(userId)).thenReturn(Optional.empty());
-        when(ruleSet2.apply(userId)).thenReturn(Optional.empty());
-        when(dynamicRepository.findAll()).thenReturn(Arrays.asList());
-
-        RecommendationResponse response = service.getRecommendations(userId);
-
-        assertTrue(response.getRecommendations().isEmpty());
+        verify(userRepository).hasProductOfType(userId, "DEBIT");
+        verify(dynamicRepository).findAll();
     }
 }

@@ -1,28 +1,30 @@
 package ru.star.bank.dto;
 
+import ru.star.bank.rules.QueryType;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class DynamicRuleDto {
-    private String query;
+    private QueryType query;
     private List<ArgumentsDto> arguments = new ArrayList<>();
     private boolean negate;
 
     public DynamicRuleDto() {
     }
 
-    public DynamicRuleDto(String query, List<ArgumentsDto> arguments, boolean negate) {
+    public DynamicRuleDto(QueryType query, List<ArgumentsDto> arguments, boolean negate) {
         this.query = query;
         this.arguments = arguments;
         this.negate = negate;
     }
 
-    public String getQuery() {
+    public QueryType getQuery() {
         return query;
     }
 
-    public void setQuery(String query) {
+    public void setQuery(QueryType query) {
         this.query = query;
     }
 
