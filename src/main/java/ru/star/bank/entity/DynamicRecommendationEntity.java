@@ -3,6 +3,7 @@ package ru.star.bank.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,7 +33,7 @@ public class DynamicRecommendationEntity {
     private String productText;
 
     @Column(name = "rule")
-    @OneToMany(mappedBy = "dynamicRecommendation", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "dynamicRecommendation", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<DynamicRuleEntity> rules = new ArrayList<>();
 
     public DynamicRecommendationEntity() {
