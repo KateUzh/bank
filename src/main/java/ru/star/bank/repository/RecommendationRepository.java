@@ -123,4 +123,10 @@ public class RecommendationRepository {
                 """;
         return jdbcTemplate.queryForObject(sql, UUID.class, username);
     }
+
+    public void clearCaches() {
+        hasProductCache.invalidateAll();
+        sumCache.invalidateAll();
+        sumDepositWithdrawCache.invalidateAll();
+    }
 }

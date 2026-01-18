@@ -1,18 +1,6 @@
 package ru.star.bank.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import ru.star.bank.rules.QueryType;
 
 import java.util.ArrayList;
@@ -25,25 +13,20 @@ public class DynamicRuleEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "query", nullable = false)
+    @Column(nullable = false)
     private QueryType query;
 
-    @Column(name = "argumentsEntity")
-    @OneToMany(mappedBy = "dynamicRule",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "dynamicRule", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<ArgumentsEntity> argumentsEntity = new ArrayList<>();
 
-    @Column(name = "negate")
+    @Column
     private boolean negate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dynamicRecommendation_id", nullable = false)
+    @JoinColumn(name = "dynamic_recommendation_id", nullable = false)
     private DynamicRecommendationEntity dynamicRecommendation;
 
     public DynamicRuleEntity() {
@@ -53,6 +36,14 @@ public class DynamicRuleEntity {
         this.query = query;
         this.argumentsEntity = argumentsEntity;
         this.negate = negate;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public QueryType getQuery() {
@@ -89,8 +80,7 @@ public class DynamicRuleEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof DynamicRuleEntity that)) return false;
-        return id == that.id;
+        return o instanceof DynamicRuleEntity that && id == that.id;
     }
 
     @Override
@@ -98,12 +88,5 @@ public class DynamicRuleEntity {
         return Objects.hashCode(id);
     }
 
-    @Override
-    public String toString() {
-        return "DynamicRuleEntity{" +
-                "query='" + query + '\'' +
-                ", argumentsEntity=" + argumentsEntity +
-                ", negate=" + negate +
-                '}';
-    }
+
 }

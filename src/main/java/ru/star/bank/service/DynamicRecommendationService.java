@@ -26,8 +26,7 @@ public class DynamicRecommendationService {
 
     @Transactional
     public DynamicRecommendationDto addDynamicRecommendation(DynamicRecommendationDto recommendationDto) {
-        DynamicRecommendationEntity entity =
-                recommendationMapper.dynamicRecommendationDtoToEntity(recommendationDto);
+        DynamicRecommendationEntity entity = recommendationMapper.dynamicRecommendationDtoToEntity(recommendationDto);
         DynamicRecommendationEntity saved = recommendationRepository.save(entity);
         return recommendationMapper.dynamicRecommendationEntityToDto(saved);
     }

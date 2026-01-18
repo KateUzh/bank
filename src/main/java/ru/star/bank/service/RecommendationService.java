@@ -56,9 +56,7 @@ public class RecommendationService {
 
     private boolean checkDynamicRule(UUID userId, DynamicRecommendationEntity ruleEntity) {
         for (DynamicRuleEntity rule : ruleEntity.getRules()) {
-            if (!evaluateRule(userId, rule)) {
-                return false;
-            }
+            if (!evaluateRule(userId, rule)) return false;
         }
         return true;
     }
@@ -73,18 +71,12 @@ public class RecommendationService {
 
             case USER_OF -> {
                 if (args.size() < 1) yield false;
-                yield userRepository.hasProductOfType(
-                        userId,
-                        args.get(0).getProductType()
-                );
+                yield userRepository.hasProductOfType(userId, args.get(0).getProductType());
             }
 
             case ACTIVE_USER_OF -> {
                 if (args.size() < 1) yield false;
-                yield userRepository.getTransactionCount(
-                        userId,
-                        args.get(0).getProductType()
-                ) >= 5;
+                yield userRepository.getTransactionCount(userId, args.get(0).getProductType()) >= 5;
             }
 
             case TRANSACTION_SUM_COMPARE -> {
@@ -95,12 +87,7 @@ public class RecommendationService {
                 String operator = args.get(2).getMathSign();
                 int threshold = args.get(3).getThresholdSum();
 
-                int sum = userRepository.getSumOfTransactions(
-                        userId,
-                        productType,
-                        transactionType
-                );
-
+                int sum = userRepository.getSumOfTransactions(userId, productType, transactionType);
                 yield compare(sum, operator, threshold);
             }
 
@@ -110,12 +97,8 @@ public class RecommendationService {
                 String productType = args.get(0).getProductType();
                 String operator = args.get(1).getMathSign();
 
-                int deposit = userRepository.getSumOfTransactions(
-                        userId, productType, "DEPOSIT"
-                );
-                int withdraw = userRepository.getSumOfTransactions(
-                        userId, productType, "WITHDRAW"
-                );
+                int deposit = userRepository.getSumOfTransactions(userId, productType, "DEPOSIT");
+                int withdraw = userRepository.getSumOfTransactions(userId, productType, "WITHDRAW");
 
                 yield compare(deposit, operator, withdraw);
             }

@@ -8,7 +8,6 @@ import com.pengrad.telegrambot.response.SendResponse;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.star.bank.repository.RecommendationRepository;
 import ru.star.bank.service.RecommendationService;
@@ -21,17 +20,23 @@ import java.util.regex.Pattern;
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
 
-    public static Pattern PATTERN = Pattern.compile("(start) (\\w+\\.\\w+)");
+    private static final Pattern PATTERN = Pattern.compile("/recommend\\s+(\\w+\\.\\w+)");
 
-    @Autowired
-    RecommendationRepository recommendationRepository;
-    private Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
+    private final RecommendationRepository recommendationRepository;
+    private final RecommendationService recommendationService;
+    private final TelegramBot telegramBot;
 
-    @Autowired
-    RecommendationService recommendationService;
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
-    @Autowired
-    private TelegramBot telegramBot;
+    public TelegramBotUpdatesListener(
+            RecommendationRepository recommendationRepository,
+            RecommendationService recommendationService,
+            TelegramBot telegramBot
+    ) {
+        this.recommendationRepository = recommendationRepository;
+        this.recommendationService = recommendationService;
+        this.telegramBot = telegramBot;
+    }
 
     @PostConstruct
     public void init() {
@@ -40,21 +45,48 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     @Override
     public int process(List<Update> updates) {
-        updates.forEach(update -> {
-            logger.info("Processing update: {}", update);
+        for (Update update : updates) {
+            if (update.message() == null || update.message().text() == null) continue;
+
             long chatId = update.message().chat().id();
-            Matcher matcher = PATTERN.matcher(update.message().text());
-            if (matcher.find()) {
-                String username = matcher.group(2);
-                UUID userID = recommendationRepository.getId(username);
-                String name = recommendationRepository.getName(username);
-                String surname = recommendationRepository.getSurname(username);
-                String recommendations = recommendationService.getRecommendations(userID).toString();
-                SendMessage message = new SendMessage(chatId, "Здравствуйте, " + name + " " + surname + ". \n" +
-                        "Новые продукты для Вас: " + recommendations);
-                SendResponse response = telegramBot.execute(message);
+            String text = update.message().text().trim();
+
+            if (text.equalsIgnoreCase("/start")) {
+                telegramBot.execute(new SendMessage(chatId,
+                        "Привет! Используйте команду /recommend <username> для получения рекомендаций."));
+                continue;
             }
-        });
+
+            Matcher matcher = PATTERN.matcher(text);
+            if (matcher.matches()) {
+                String username = matcher.group(1);
+
+                try {
+                    UUID userId = recommendationRepository.getId(username);
+                    String name = recommendationRepository.getName(username);
+                    String surname = recommendationRepository.getSurname(username);
+
+                    if (userId == null || name == null || surname == null) {
+                        telegramBot.execute(new SendMessage(chatId, "Пользователь не найден"));
+                        continue;
+                    }
+
+                    String recommendations = recommendationService.getRecommendations(userId)
+                            .getRecommendations()
+                            .stream()
+                            .map(r -> r.getProductName() + ": " + r.getProductText())
+                            .reduce((a, b) -> a + "\n" + b)
+                            .orElse("Новых продуктов нет");
+
+                    telegramBot.execute(new SendMessage(chatId,
+                            "Здравствуйте, " + name + " " + surname + ".\nНовые продукты для вас:\n" + recommendations));
+
+                } catch (Exception e) {
+                    logger.error("Ошибка при обработке username: " + username, e);
+                    telegramBot.execute(new SendMessage(chatId, "Пользователь не найден"));
+                }
+            }
+        }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 }
