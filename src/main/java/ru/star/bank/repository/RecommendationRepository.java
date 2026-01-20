@@ -97,5 +97,36 @@ public class RecommendationRepository {
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, userId, productType);
         return count != null ? count : 0;
     }
+    public String getName(String username){
+        String sql = """
+                SELECT first_name
+                FROM users u
+                WHERE u.username = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, String.class, username);
+    }
 
+    public String getSurname(String username){
+        String sql = """
+                SELECT last_name
+                FROM users u
+                WHERE u.username = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, String.class, username);
+    }
+
+    public UUID getId(String username){
+        String sql = """
+                SELECT id
+                FROM users u
+                WHERE u.username = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, UUID.class, username);
+    }
+
+    public void clearCaches() {
+        hasProductCache.invalidateAll();
+        sumCache.invalidateAll();
+        sumDepositWithdrawCache.invalidateAll();
+    }
 }

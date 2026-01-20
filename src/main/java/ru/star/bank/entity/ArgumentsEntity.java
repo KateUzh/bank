@@ -18,7 +18,6 @@ public class ArgumentsEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private long id;
 
     @Column(name = "product_type")
@@ -34,11 +33,10 @@ public class ArgumentsEntity {
     private Integer thresholdSum;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dynamicRule_id", nullable = false)
+    @JoinColumn(name = "dynamic_rule_id", nullable = false)
     private DynamicRuleEntity dynamicRule;
 
-    public ArgumentsEntity() {
-    }
+    public ArgumentsEntity() {}
 
     public ArgumentsEntity(String productType, String transactionType, String mathSign, Integer thresholdSum) {
         this.productType = productType;
@@ -47,68 +45,19 @@ public class ArgumentsEntity {
         this.thresholdSum = thresholdSum;
     }
 
-    public ArgumentsEntity(String productType) {
-        this.productType = productType;
-    }
-
-    public String getProductType() {
-        return productType;
-    }
-
-    public void setProductType(String productType) {
-        this.productType = productType;
-    }
-
-    public String getTransactionType() {
-        return transactionType;
-    }
-
-    public void setTransactionType(String transactionType) {
-        this.transactionType = transactionType;
-    }
-
-    public String getMathSign() {
-        return mathSign;
-    }
-
-    public void setMathSign(String mathSign) {
-        this.mathSign = mathSign;
-    }
-
-    public Integer getThresholdSum() {
-        return thresholdSum;
-    }
-
-    public void setThresholdSum(Integer thresholdSum) {
-        this.thresholdSum = thresholdSum;
-    }
-
-    public DynamicRuleEntity getDynamicRule() {
-        return dynamicRule;
-    }
-
-    public void setDynamicRule(DynamicRuleEntity dynamicRule) {
-        this.dynamicRule = dynamicRule;
-    }
+    public String getProductType() { return productType; }
+    public void setProductType(String productType) { this.productType = productType; }
+    public String getTransactionType() { return transactionType; }
+    public void setTransactionType(String transactionType) { this.transactionType = transactionType; }
+    public String getMathSign() { return mathSign; }
+    public void setMathSign(String mathSign) { this.mathSign = mathSign; }
+    public Integer getThresholdSum() { return thresholdSum; }
+    public void setThresholdSum(Integer thresholdSum) { this.thresholdSum = thresholdSum; }
+    public DynamicRuleEntity getDynamicRule() { return dynamicRule; }
+    public void setDynamicRule(DynamicRuleEntity dynamicRule) { this.dynamicRule = dynamicRule; }
 
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof ArgumentsEntity that)) return false;
-        return id == that.id;
-    }
-
+    public boolean equals(Object o) { return o instanceof ArgumentsEntity that && id == that.id; }
     @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
-
-    @Override
-    public String toString() {
-        return "ArgumentsEntity{" +
-                "productType='" + productType + '\'' +
-                ", transactionType='" + transactionType + '\'' +
-                ", mathSign='" + mathSign + '\'' +
-                ", thresholdSum=" + thresholdSum +
-                '}';
-    }
+    public int hashCode() { return Objects.hashCode(id); }
 }

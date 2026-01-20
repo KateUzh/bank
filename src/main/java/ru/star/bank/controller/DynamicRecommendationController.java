@@ -12,6 +12,7 @@ import ru.star.bank.dto.DynamicRecommendationDto;
 import ru.star.bank.service.DynamicRecommendationService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -32,9 +33,7 @@ public class DynamicRecommendationController {
     @GetMapping
     public ResponseEntity<?> getAllDynamicRecommendations() {
         List<DynamicRecommendationDto> rules = recommendationService.getAllDynamicRecommendations();
-        return ResponseEntity.ok().body(new Object() {
-            public final List<DynamicRecommendationDto> data = rules;
-        });
+        return ResponseEntity.ok().body(Map.of("data", rules));
     }
 
     @DeleteMapping("/{product_id}")
