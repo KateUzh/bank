@@ -11,7 +11,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+/**
+ * Сервис управления динамическими рекомендациями банковских продуктов.
+ *
+ * <p>Обеспечивает операции создания, получения и удаления
+ * динамических рекомендаций, хранящихся в базе данных.
+ *
+ * <p>Сервис выполняет преобразование между DTO и entity
+ * с использованием {@link DynamicRecommendationMapper}.
+  */
 @Service
 public class DynamicRecommendationService {
 

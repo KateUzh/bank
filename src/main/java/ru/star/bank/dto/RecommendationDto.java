@@ -3,9 +3,20 @@ package ru.star.bank.dto;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * DTO рекомендации банковского продукта.
+ *
+ * <p>Используется для передачи данных о рекомендации
+ * между слоями приложения и в REST-ответе.
+ */
 public class RecommendationDto {
+    /** Уникальный идентификатор продукта */
     private UUID productId;
+
+    /** Название банковского продукта */
     private String productName;
+
+    /** Текстовое описание рекомендации */
     private String productText;
 
     public RecommendationDto() {}

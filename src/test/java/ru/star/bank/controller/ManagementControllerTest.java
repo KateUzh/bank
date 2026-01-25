@@ -16,7 +16,28 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+/**
+ * Юнит-тест для {@link ManagementController}.
+ *
+ * <p>Тест проверяет корректность работы административных эндпоинтов:
+ * <ul>
+ *     <li>очистка кэшей JDBC-запросов;</li>
+ *     <li>получение информации о приложении;</li>
+ *     <li>получение статистики срабатываний правил.</li>
+ * </ul>
+ * </p>
+ *
+ * <p>Используются мок-объекты для {@link RecommendationRepository} и {@link RuleStatsService},
+ * чтобы изолировать тестируемый контроллер от внешних зависимостей.</p>
+ *
+ * <p><b>Проверяемое поведение:</b>
+ * <ul>
+ *     <li>{@link ManagementController#clearCaches()} вызывает метод {@link RecommendationRepository#clearCaches()} и возвращает HTTP 204;</li>
+ *     <li>{@link ManagementController#getInfo()} возвращает правильное имя приложения и версию;</li>
+ *     <li>{@link ManagementController#getRuleStats()} вызывает {@link RuleStatsService#getAllStats()} и корректно формирует JSON с ключом "stats".</li>
+ * </ul>
+ * </p>
+ */
 class ManagementControllerTest {
 
     private RecommendationRepository recommendationRepository;

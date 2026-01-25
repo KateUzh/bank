@@ -18,7 +18,29 @@ import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+/**
+ * Юнит-тест для {@link RecommendationRepository}.
+ *
+ * <p>Тестирует методы репозитория, которые работают с транзакциями и продуктами пользователей.
+ * Используется мок {@link JdbcTemplate} для имитации работы с базой данных.
+ * Также проверяется работа кэшей, чтобы SQL-запросы выполнялись только один раз при повторных вызовах.</p>
+ *
+ * <p>Проверяемые методы:
+ * <ul>
+ *     <li>{@link RecommendationRepository#hasProductOfType(UUID, String)}</li>
+ *     <li>{@link RecommendationRepository#getSumOfTransactions(UUID, String, String)}</li>
+ *     <li>{@link RecommendationRepository#getSumOfAllTransactions(UUID, String)}</li>
+ *     <li>{@link RecommendationRepository#getSumDepositWithdraw(UUID, String)}</li>
+ *     <li>{@link RecommendationRepository#getTransactionCount(UUID, String)}</li>
+ * </ul>
+ *
+ * <p>Особенности:
+ * <ul>
+ *     <li>Проверка возврата правильных значений true/false для {@code hasProductOfType}.</li>
+ *     <li>Проверка корректного суммирования транзакций, включая депозит/снятие.</li>
+ *     <li>Проверка работы кэша для повторных вызовов методов.</li>
+ * </ul>
+ */
 public class RecommendationRepositoryTest {
 
     @Mock

@@ -16,6 +16,24 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Слушатель обновлений Telegram-бота.
+ *
+ * <p>Обрабатывает команды пользователей и отправляет рекомендации банковских продуктов.</p>
+ *
+ * <p><b>Поддерживаемые команды:</b>
+ * <ul>
+ *     <li><code>/start</code> — приветственное сообщение с инструкцией;</li>
+ *     <li><code>/recommend &lt;username&gt;</code> — получение рекомендаций
+ *     для указанного пользователя (username в формате <i>логин.логин</i>).</li>
+ * </ul>
+ *
+ * <p><b>Поведение при ошибках:</b>
+ * <ul>
+ *     <li>если пользователь не найден — отправляется сообщение «Пользователь не найден»;</li>
+ *     <li>все исключения логируются и не прерывают работу бота.</li>
+ * </ul>
+ */
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
 
@@ -44,6 +62,20 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         telegramBot.setUpdatesListener(this);
     }
 
+    /**
+     * Обрабатывает список обновлений от Telegram.
+     *
+     * <p>Для каждого текстового сообщения выполняется:
+     * <ul>
+     *     <li>обработка команды /start;</li>
+     *     <li>обработка команды /recommend &lt;username&gt;;</li>
+     *     <li>игнорирование прочих сообщений.</li>
+     * </ul>
+     * </p>
+     *
+     * @param updates список обновлений
+     * @return код {@link UpdatesListener#CONFIRMED_UPDATES_ALL} для подтверждения всех обновлений
+     */
     @Override
     public int process(List<Update> updates) {
         for (Update update : updates) {
@@ -138,5 +170,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         );
     }
 
-    private record UserData(UUID userId, String name, String surname) {}
+    private record UserData(UUID userId, String name, String surname) {
+    }
 }

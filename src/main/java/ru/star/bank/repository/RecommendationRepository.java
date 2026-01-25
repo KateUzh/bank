@@ -9,6 +9,14 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Репозиторий для доступа к данным рекомендаций.
+ *
+ * <p>Использует {@link org.springframework.jdbc.core.JdbcTemplate}
+ * для выполнения SQL-запросов к базе данных транзакций.
+ *
+ * <p>База данных используется только для чтения.
+ */
 @Repository
 public class RecommendationRepository {
 
@@ -36,7 +44,13 @@ public class RecommendationRepository {
                 .expireAfterWrite(10, TimeUnit.MINUTES)
                 .build();
     }
-
+    /**
+     * Проверяет, использует ли пользователь продукты заданного типа.
+     *
+     * @param userId идентификатор пользователя
+     * @param type тип продукта (DEBIT, CREDIT, INVEST и т.д.)
+     * @return true, если пользователь использует хотя бы один продукт данного типа
+     */
     public boolean hasProductOfType(UUID userId, String type) {
         String key = userId + "-" + type;
         return hasProductCache.get(key, k -> {
