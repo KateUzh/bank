@@ -15,22 +15,7 @@ import java.util.UUID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-/**
- * Юнит-тест для {@link RecommendationController}.
- *
- * <p>Использует {@link MockMvc} для тестирования REST-эндпоинта получения рекомендаций
- * по UUID пользователя без необходимости поднимать весь Spring контекст.
- *
- * <p>Тест проверяет следующие сценарии:
- * <ul>
- *     <li>Возврат корректного HTTP-статуса (200 OK).</li>
- *     <li>Правильное формирование JSON-ответа, включая userId и список рекомендаций.</li>
- *     <li>Обработка списка рекомендаций разного размера (в том числе большого списка из 1000 элементов).</li>
- * </ul>
- *
- * <p>Для изоляции контроллера используется анонимный {@link RecommendationService},
- * возвращающий заранее определенный {@link RecommendationResponse}.
- */
+
 public class RecommendationControllerTest {
 
     private MockMvc mockMvc;

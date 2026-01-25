@@ -8,16 +8,7 @@ import ru.star.bank.dto.RecommendationResponse;
 import ru.star.bank.service.RecommendationService;
 
 import java.util.UUID;
-/**
- * REST-контроллер сервиса рекомендаций.
- *
- * <p>Предоставляет API для получения списка рекомендованных
- * банковских продуктов для конкретного пользователя.</p>
- *
- * <p>Основной сценарий использования:
- * клиент отправляет HTTP GET-запрос с идентификатором пользователя,
- * сервис анализирует данные и возвращает список рекомендаций.</p>
- */
+
 @RestController
 @RequestMapping("/recommendation")
 public class RecommendationController {
@@ -27,13 +18,7 @@ public class RecommendationController {
     public RecommendationController(RecommendationService service) {
         this.service = service;
     }
-    /**
-     * Возвращает список рекомендаций для пользователя.
-     *
-     * @param userId уникальный идентификатор пользователя банка
-     * @return объект с идентификатором пользователя и списком рекомендаций;
-     *         если рекомендаций нет, список будет пустым
-     */
+
     @GetMapping("/{user_id}")
     public RecommendationResponse getRecommendations(@PathVariable("user_id") UUID userId) {
         return service.getRecommendations(userId);

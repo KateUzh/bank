@@ -18,18 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-/**
- * Юнит-тест для {@link RecommendationService}, проверяющий обработку динамических и фиксированных правил.
- *
- * <p>Тестируются следующие сценарии формирования рекомендаций:
- * <ul>
- *     <li>Фиксированное правило {@link RecommendationRuleSet}, которое всегда возвращает рекомендацию</li>
- *     <li>Динамическое правило на основе {@link DynamicRecommendationEntity}, которое может добавлять рекомендации</li>
- *     <li>Сценарий, когда нет рекомендаций ни от фиксированных правил, ни от динамических правил</li>
- * </ul>
- *
- * <p>Используются моки для {@link RecommendationRepository} и {@link DynamicRecommendationRepository} для имитации данных пользователей и динамических правил.</p>
- */
+
 public class RecommendationServiceDynamicTest {
 
     private RecommendationRepository userRepository;

@@ -18,13 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-/**
- * Тестовый класс для проверки работы сервиса рекомендаций {@link RecommendationService}
- * с различными сценариями сравнения суммы транзакций пользователя.
- * <p>
- * В данном классе реализованы тесты для проверки условий: больше, меньше и равно суммы транзакции,
- * чтобы убедиться, что рекомендации формируются корректно в зависимости от условий.
- */
+
 public class RecommendationServiceTransactionSumTest {
 
     private RecommendationRepository userRepository;

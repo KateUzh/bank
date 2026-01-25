@@ -6,25 +6,7 @@ import ru.star.bank.repository.RecommendationRepository;
 
 import java.util.Optional;
 import java.util.UUID;
-/**
- * Фиксированное правило рекомендации продукта «Top Saving».
- *
- * <p>Правило применяется для пользователей, активно использующих
- * дебетовые и/или накопительные продукты, при условии положительного
- * финансового потока.
- *
- * <p><b>Условия применения рекомендации:</b>
- * <ul>
- *     <li>пользователь является владельцем дебетового продукта;</li>
- *     <li>сумма пополнений по дебетовому или накопительному продукту
- *     не менее 50 000;</li>
- *     <li>сумма пополнений по дебетовому продукту превышает
- *     сумму списаний.</li>
- * </ul>
- *
- * <p>При выполнении всех условий возвращается рекомендация
- * продукта «Top Saving».
- */
+
 @Component
 public class TopSavingRuleSet implements RecommendationRuleSet {
 
@@ -33,16 +15,7 @@ public class TopSavingRuleSet implements RecommendationRuleSet {
     public TopSavingRuleSet(RecommendationRepository repository) {
         this.repository = repository;
     }
-    /**
-     * Применяет правило рекомендации к пользователю.
-     *
-     * <p>Метод выполняет последовательную проверку бизнес-условий
-     * и возвращает рекомендацию только в случае их полного выполнения.
-     *
-     * @param userId идентификатор пользователя
-     * @return {@link Optional} с рекомендацией продукта
-     *         либо {@link Optional#empty()}, если условия не выполнены
-     */
+
     @Override
     public Optional<RecommendationDto> apply(UUID userId) {
         boolean usesDebit = repository.hasProductOfType(userId, "DEBIT");

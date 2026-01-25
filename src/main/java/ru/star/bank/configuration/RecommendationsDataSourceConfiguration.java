@@ -10,23 +10,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-/**
- * Конфигурация источников данных для приложения.
- *
- * <p>Настраивает два источника данных:
- * <ul>
- *     <li><b>recommendationsDataSource</b> — отдельный read-only источник для работы с базой рекомендаций.
- *     Использует HikariCP и H2 драйвер. Предназначен для выполнения только SELECT-запросов.</li>
- *     <li><b>defaultDataSource</b> — основной источник данных приложения (например, для пользователей, транзакций и т.д.).
- *     Помечен как <code>@Primary</code> для использования по умолчанию.</li>
- * </ul>
- *
- * <p>Настраивается {@link JdbcTemplate} для источника рекомендаций:
- * <ul>
- *     <li>Bean <b>recommendationsJdbcTemplate</b> использует <code>recommendationsDataSource</code>
- *     для выполнения SQL-запросов к базе рекомендаций.</li>
- * </ul>
- */
+
 @Configuration
 public class RecommendationsDataSourceConfiguration {
 

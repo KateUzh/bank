@@ -10,26 +10,7 @@ import ru.star.bank.entity.DynamicRuleEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
-/**
- * Маппер для преобразования динамических рекомендаций
- * между DTO и entity моделями.
- *
- * <p>Отвечает за корректную сборку иерархии объектов:
- * <ul>
- *     <li>{@link DynamicRecommendationEntity}</li>
- *     <li>{@link DynamicRuleEntity}</li>
- *     <li>{@link ArgumentsEntity}</li>
- * </ul>
- *
- * <p><b>Особенности реализации:</b>
- * <ul>
- *     <li>маппинг выполняется вручную без использования reflection;</li>
- *     <li>при преобразовании DTO → entity корректно
- *     проставляются обратные связи;</li>
- *     <li>методы допускают {@code null} на входе
- *     и возвращают {@code null} или пустые коллекции.</li>
- * </ul>
- */
+
 @Component
 public class DynamicRecommendationMapper {
 

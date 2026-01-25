@@ -16,23 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-/**
- * Юнит-тест для {@link RecommendationService}, проверяющий обработку динамических правил.
- *
- * <p>Тестируется корректность применения {@link DynamicRuleEntity} для формирования
- * динамических рекомендаций, включая:
- * <ul>
- *     <li>Правило USER_OF, когда условие выполняется</li>
- *     <li>Правило USER_OF, когда условие не выполняется</li>
- *     <li>Правило USER_OF с инверсией (negate = true)</li>
- * </ul>
- *
- * <p>Используются моки для {@link RecommendationRepository} и {@link DynamicRecommendationRepository}
- * для имитации поведения базы данных и пользовательских продуктов.
- *
- * <p>Проверяется, что сервис корректно формирует список рекомендаций
- * в зависимости от результатов применения динамических правил и флага negate.
- */
+
 public class RecommendationServiceDynamicRulesTest {
 
     @Test

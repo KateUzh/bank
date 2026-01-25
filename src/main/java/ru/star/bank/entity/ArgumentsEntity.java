@@ -11,29 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.util.Objects;
-/**
- * Сущность аргумента динамического правила.
- *
- * <p>Предназначена для хранения входных параметров
- * динамических правил рекомендаций банковских продуктов.
- *
- * <p><b>Поля:</b>
- * <ul>
- *     <li><b>productType</b> — тип продукта (DEBIT, CREDIT, SAVING и т.д.);</li>
- *     <li><b>transactionType</b> — тип транзакции (DEPOSIT, WITHDRAW и т.д.);</li>
- *     <li><b>mathSign</b> — оператор сравнения для правила (>, <, =, >=, <=);</li>
- *     <li><b>thresholdSum</b> — пороговое значение для сравнения;</li>
- *     <li><b>dynamicRule</b> — родительское динамическое правило.</li>
- * </ul>
- *
- * <p><b>Особенности JPA:</b>
- * <ul>
- *     <li>Используется `@ManyToOne` с `FetchType.LAZY` для динамического правила.</li>
- *     <li>Поле `dynamicRule` обязательно (`nullable = false`).</li>
- *     <li>Идентификатор `id` генерируется автоматически.</li>
- *     <li>Методы `equals` и `hashCode` основаны на `id` для корректной работы в коллекциях и Hibernate.</li>
- * </ul>
- */
+
 @Entity
 @Table(name = "arguments")
 public class ArgumentsEntity {

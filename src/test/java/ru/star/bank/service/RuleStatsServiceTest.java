@@ -10,12 +10,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-/**
- * Тестовый класс для проверки функциональности {@link RuleStatsService}.
- * <p>
- * В данном классе реализованы тесты для проверки корректности увеличения,
- * удаления и получения статистики по правилам.
- */
+
 class RuleStatsServiceTest {
 
     private RuleStatsService service;

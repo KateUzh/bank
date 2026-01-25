@@ -6,16 +6,7 @@ import ru.star.bank.repository.RecommendationRepository;
 
 import java.util.Optional;
 import java.util.UUID;
-/**
- * Правила рекомендации продукта "Invest 500".
- *
- * <p>Продукт рекомендуется пользователям, которые:
- * <ul>
- *   <li>используют хотя бы один DEBIT-продукт;</li>
- *   <li>не используют продукты типа INVEST;</li>
- *   <li>имеют сумму пополнений по SAVING-продуктам более 1000 ₽.</li>
- * </ul>
- */
+
 @Component
 public class Invest500RuleSet implements RecommendationRuleSet {
 
@@ -25,13 +16,6 @@ public class Invest500RuleSet implements RecommendationRuleSet {
         this.repository = repository;
     }
 
-    /**
-     * Проверяет выполнение правил рекомендации Invest 500.
-     *
-     * @param userId идентификатор пользователя
-     * @return рекомендация Invest 500 при выполнении всех условий,
-     *         иначе Optional.empty()
-     */
     @Override
     public Optional<RecommendationDto> apply(UUID userId) {
         boolean usesDebit = repository.hasProductOfType(userId, "DEBIT");

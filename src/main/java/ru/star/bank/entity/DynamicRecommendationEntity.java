@@ -14,36 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-/**
- * Сущность динамической рекомендации.
- *
- * <p>Представляет продукт, который может быть рекомендован пользователю
- * на основе набора динамических правил ({@link DynamicRuleEntity}).
- *
- * <p><b>Поля:</b>
- * <ul>
- *     <li><b>id</b> — уникальный идентификатор записи;</li>
- *     <li><b>productId</b> — идентификатор продукта, уникальный в системе;</li>
- *     <li><b>productName</b> — наименование продукта;</li>
- *     <li><b>productText</b> — описание продукта для пользователя;</li>
- *     <li><b>rules</b> — список динамических правил, применяемых для рекомендации
- *     (связь OneToMany, каскадное сохранение, EAGER fetch).</li>
- * </ul>
- *
- * <p><b>Особенности JPA:</b>
- * <ul>
- *     <li>Используется `@GeneratedValue(strategy = GenerationType.UUID)` для генерации уникального идентификатора;</li>
- *     <li>Связь с `DynamicRuleEntity` реализована через `mappedBy = "dynamicRecommendation"`, каскадное сохранение (`CascadeType.ALL`) и EAGER загрузку;</li>
- *     <li>Методы `equals` и `hashCode` основаны на `productId` для корректного поведения в коллекциях и при работе с JPA.</li>
- * </ul>
- *
- * <p><b>Примечания по использованию:</b>
- * <ul>
- *     <li>Список правил должен корректно содержать обратные ссылки на parent {@link DynamicRecommendationEntity};</li>
- *     <li>Обновление или удаление сущности динамической рекомендации каскадно применится к всем правилам;</li>
- *     <li>При работе с EAGER fetch следует учитывать возможное увеличение нагрузки на память при больших наборах правил.</li>
- * </ul>
- */
+
 @Entity
 @Table(name = "dynamic_recommendations")
 public class DynamicRecommendationEntity {

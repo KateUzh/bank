@@ -15,13 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-/**
- * Сервис формирования рекомендаций банковских продуктов.
- *
- * <p>Сервис отвечает за применение набора правил рекомендаций
- * к конкретному пользователю и формирование итогового списка
- * подходящих продуктов.
- */
+
 @Service
 public class RecommendationService {
 
@@ -36,19 +30,7 @@ public class RecommendationService {
         this.dynamicRepository = dynamicRepository;
         this.userRepository = userRepository;
     }
-    /**
-     * Формирует список рекомендаций для указанного пользователя.
-     *
-     * <p>Метод:
-     * <ul>
-     *     <li>применяет фиксированные правила рекомендаций;</li>
-     *     <li>проверяет динамические правила, загруженные из БД;</li>
-     *     <li>объединяет результаты в единый список.</li>
-     * </ul>
-     *
-     * @param userId идентификатор пользователя
-     * @return ответ с рекомендациями банковских продуктов
-     */
+
     public RecommendationResponse getRecommendations(UUID userId) {
 
         List<RecommendationDto> fixedRecommendations = ruleSets.stream()
@@ -71,30 +53,14 @@ public class RecommendationService {
 
         return new RecommendationResponse(userId, all);
     }
-    /**
-     * Проверяет, выполняются ли все правила динамической рекомендации
-     * для указанного пользователя.
-     *
-     * @param userId идентификатор пользователя
-     * @param ruleEntity динамическая рекомендация
-     * @return {@code true}, если все правила выполняются, иначе {@code false}
-     */
+
     private boolean checkDynamicRule(UUID userId, DynamicRecommendationEntity ruleEntity) {
         for (DynamicRuleEntity rule : ruleEntity.getRules()) {
             if (!evaluateRule(userId, rule)) return false;
         }
         return true;
     }
-    /**
-     * Оценивает выполнение одного динамического правила для пользователя.
-     *
-     * <p>Тип проверки определяется значением {@link QueryType}.
-     * Результат может быть инвертирован, если правило содержит флаг отрицания.
-     *
-     * @param userId идентификатор пользователя
-     * @param rule правило для проверки
-     * @return {@code true}, если правило выполнено, иначе {@code false}
-     */
+
     private boolean evaluateRule(UUID userId, DynamicRuleEntity rule) {
 
         QueryType queryType = rule.getQuery();
