@@ -1,7 +1,20 @@
 package ru.star.bank.dto;
 
 import java.util.Objects;
-
+/**
+ * DTO для аргументов динамического правила.
+ *
+ * <p>Используется для передачи данных между слоями приложения
+ * (из REST API в сервис или для маппинга с {@link ru.star.bank.entity.ArgumentsEntity}).
+ *
+ * <p><b>Поля:</b>
+ * <ul>
+ *     <li><b>productType</b> — тип продукта (DEBIT, CREDIT, SAVING и т.д.);</li>
+ *     <li><b>transactionType</b> — тип транзакции (DEPOSIT, WITHDRAW и т.д.);</li>
+ *     <li><b>mathSign</b> — оператор сравнения (>, <, =, >=, <=);</li>
+ *     <li><b>thresholdSum</b> — пороговое значение для сравнения;</li>
+ * </ul>
+ */
 public class ArgumentsDto {
     private String productType;
     private String transactionType;

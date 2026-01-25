@@ -16,7 +16,22 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+/**
+ * Юнит-тест для {@link DynamicRecommendationService}.
+ *
+ * <p>Проверяет корректность работы сервиса динамических рекомендаций, включая:
+ * <ul>
+ *     <li>Добавление новой рекомендации</li>
+ *     <li>Получение всех рекомендаций</li>
+ *     <li>Удаление рекомендации по productId</li>
+ * </ul>
+ *
+ * <p>Используются моки для {@link DynamicRecommendationRepository}, а {@link DynamicRecommendationMapper}
+ * используется реальный для проверки корректного преобразования DTO ↔ Entity.
+ *
+ * <p>Проверяется, что методы сервиса корректно взаимодействуют с репозиторием
+ * и возвращают ожидаемые DTO.
+ */
 public class DynamicRecommendationServiceTest {
 
     private DynamicRecommendationRepository repository;

@@ -14,7 +14,20 @@ import ru.star.bank.service.DynamicRecommendationService;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
+/**
+ * REST-контроллер для управления динамическими рекомендациями.
+ *
+ * <p>Обеспечивает CRUD-операции для динамических рекомендаций продуктов банка.
+ * Используется в административной панели или внутреннем API.
+ *
+ * <p><b>Маршруты:</b>
+ * <ul>
+ *     <li><b>POST /rule</b> — создать новую динамическую рекомендацию. Принимает {@link DynamicRecommendationDto} в теле запроса и возвращает созданный объект.</li>
+ *     <li><b>GET /rule</b> — получить список всех динамических рекомендаций. Возвращает JSON вида <code>{ "data": [...] }</code>.</li>
+ *     <li><b>DELETE /rule/{product_id}</b> — удалить динамическую рекомендацию по идентификатору продукта (UUID). Возвращает HTTP 204 No Content при успешном удалении.</li>
+ * </ul>
+ * </p>
+ */
 @RestController
 @RequestMapping("/rule")
 public class DynamicRecommendationController {
