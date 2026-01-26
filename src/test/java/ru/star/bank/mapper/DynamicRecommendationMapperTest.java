@@ -14,7 +14,23 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
+/**
+ * Юнит-тест для {@link DynamicRecommendationMapper}.
+ *
+ * <p>Проверяет корректность преобразования между DTO и Entity:
+ * <ul>
+ *     <li>{@link ArgumentsDto} ↔ {@link ArgumentsEntity}</li>
+ *     <li>{@link DynamicRuleDto} ↔ {@link DynamicRuleEntity}</li>
+ *     <li>{@link DynamicRecommendationDto} ↔ {@link DynamicRecommendationEntity}</li>
+ * </ul>
+ *
+ * <p>Тесты обеспечивают:
+ * <ul>
+ *     <li>сохранение всех полей при преобразовании туда и обратно;</li>
+ *     <li>правильную работу связей между сущностями (например, {@link DynamicRuleEntity} и {@link DynamicRecommendationEntity});</li>
+ *     <li>поддержание списков аргументов и правил при маппинге.</li>
+ * </ul>
+ * */
 public class DynamicRecommendationMapperTest {
 
     private DynamicRecommendationMapper mapper;

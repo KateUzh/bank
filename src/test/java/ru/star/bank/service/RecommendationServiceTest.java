@@ -17,7 +17,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+/**
+ * Юнит-тест для {@link RecommendationService}, проверяющий обработку динамических рекомендаций
+ * с использованием правил {@link DynamicRuleEntity}.
+ *
+ * <p>Сценарий теста:
+ * <ul>
+ *     <li>Создается динамическая рекомендация с правилом типа {@link QueryType#USER_OF}.</li>
+ *     <li>Используется мок {@link RecommendationRepository} для проверки наличия продукта пользователя.</li>
+ *     <li>Используется мок {@link DynamicRecommendationRepository} для предоставления динамических рекомендаций.</li>
+ *     <li>Проверяется, что {@link RecommendationResponse} содержит рекомендации после оценки правила.</li>
+ *     <li>Выполняется верификация вызовов методов репозиториев.</li>
+ * </ul>
+ */
 public class RecommendationServiceTest {
 
     private RecommendationRepository userRepository;

@@ -9,7 +9,23 @@ import ru.star.bank.service.RuleStatsService;
 
 import java.util.List;
 import java.util.Map;
-
+/**
+ * REST-контроллер для управления административными функциями и статистикой правил.
+ *
+ * <p>Предоставляет эндпоинты для:
+ * <ul>
+ *     <li>очистки кэшей JDBC-запросов;</li>
+ *     <li>получения информации о приложении;</li>
+ *     <li>просмотра статистики срабатываний правил рекомендаций.</li>
+ * </ul>
+ *
+ * <p><b>Маршруты:</b>
+ * <ul>
+ *     <li><b>POST /management/clear-caches</b> — очищает все кэши JDBC (hasProductCache, sumCache, sumDepositWithdrawCache). Возвращает HTTP 204 No Content.</li>
+ *     <li><b>GET /management/info</b> — возвращает базовую информацию о приложении: имя и версию в JSON формате <code>{ "name": "...", "version": "..." }</code>.</li>
+ *     <li><b>GET /rule/stats</b> — возвращает статистику срабатываний правил в формате JSON: <code>{ "stats": [ { "rule_id": "...", "count": ... }, ... ] }</code>.</li>
+ * </ul>
+ */
 @RestController
 public class ManagementController {
 
